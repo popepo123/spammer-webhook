@@ -41,6 +41,10 @@ spammer-webhook/
 ## Lisensi
 Proyek ini menggunakan lisensi MIT. Silakan gunakan dengan tanggung jawab penuh.
 
+## Kontak & Komunitas
+- GitHub: [https://github.com/popepo123](https://github.com/popepo123)
+- Discord: [https://discord.com/invite/PRNUmK7ZBG)](https://discord.com/invite/PRNUmK7ZBG)
+
 ---
 
 Jika ada pertanyaan atau saran, jangan ragu untuk membuat issue atau pull request!
