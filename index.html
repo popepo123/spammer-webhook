@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Webhook Discord</title>
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/1297594228997619826/1339182972649340948/6cbcc4aa-546e-422c-8ec4-715a806b731d-removebg-preview.png?ex=67d011d5&is=67cec055&hm=ad04c9f84cf1db1ae3cbd8265ab6af76efb23349769e872dd9e9ebef2cbefb27&" type="image/png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #2c2f33;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            background: #23272a;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        input, select, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        input, select {
+            background: #99aab5;
+            color: black;
+        }
+        button {
+            background: #7289da;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5b6eae;
+        }
+        #status {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Spam Webhook Discord</h2>
+        <input type="text" id="webhook" placeholder="Masukkan Webhook URL"><br>
+        <input type="text" id="message" placeholder="Masukkan Pesan"><br>
+        <input type="number" id="count" placeholder="Jumlah Pesan" min="1" max="100" value="10"><br>
+        <select id="mode">
+            <option value="text">Teks Biasa</option>
+            <option value="embed">Embed</option>
+        </select><br>
+        <button onclick="startSpam()">Mulai Spam</button>
+        <p id="status">Menunggu input...</p>
+    </div>
+    <script>
+        async function startSpam() {
+            let webhook = document.getElementById('webhook').value;
+            let message = document.getElementById('message').value;
+            let count = parseInt(document.getElementById('count').value);
+            let mode = document.getElementById('mode').value;
+            let status = document.getElementById('status');
+
+            if (!webhook || !message || count <= 0 || count > 100) {
+                alert("Harap isi semua kolom dengan benar! Maksimal 100 pesan.");
+                return;
+            }
+
+            status.innerText = "Mengirim pesan...";
+            for (let i = 0; i < count; i++) {
+                let payload = mode === "text" ? { content: message } : {
+                    embeds: [{
+                        title: "embed mode spammer",
+                        description: message,
+                        color: 3447003
+                    }]
+                };
+                try {
+                    await fetch(webhook, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    status.innerText = `Pesan terkirim: ${i + 1} dari ${count}`;
+                } catch (error) {
+                    console.error("Error mengirim pesan", error);
+                    status.innerText = "Terjadi kesalahan saat mengirim pesan!";
+                    break;
+                }
+            }
+            status.innerText = "Semua pesan telah dikirim!";
+        }
+    </script>
+</body>
+</html>
