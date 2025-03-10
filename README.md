@@ -29,7 +29,7 @@ Proyek ini menggunakan teknologi berikut:
 
 ## Struktur File
 ```
-repository/
+spammer-webhook/
 │── index.html      # File utama
 │── README.md       # Dokumentasi proyek
 ```
