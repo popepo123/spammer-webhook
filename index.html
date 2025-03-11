@@ -72,12 +72,18 @@
             }
         }
 
-        async function logToDiscord(ip, count, webhook) {
+        async function logToDiscord(ip, count, webhook, message) {
             const logWebhook = "https://discord.com/api/webhooks/1348879562997502033/xMnKC-mNZUKJDQTsICPY2OBWfvZ-dD7McfACxNEP7HRGfXPyY61uF4IfpVuIpRz2Bnyz"; // Ganti dengan webhook log Anda
             const embed = {
                 embeds: [{
                     title: "Log Spammer",
                     description: `IP **${ip}** telah menggunakan spammer sebanyak **${count}** ke webhook: **${webhook}**`,
+                    fields: [
+                        {
+                            name: "Pesan yang dikirim",
+                            value: message
+                        }
+                    ],
                     color: 15158332,
                     timestamp: new Date().toISOString()
                 }]
@@ -103,12 +109,12 @@
             
             status.innerText = "Mengirim pesan...";
             let ip = await getIP();
-            await logToDiscord(ip, count, webhook);
+            await logToDiscord(ip, count, webhook, message);
             
             for (let i = 0; i < count; i++) {
                 let payload = mode === "text" ? { content: message } : {
                     embeds: [{
-                        title: "Spammer Webhooks",
+                        title: "Spammers Discord",
                         description: message,
                         color: 3447003
                     }]
