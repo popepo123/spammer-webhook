@@ -34,6 +34,12 @@ spammer-webhook/
 │── README.md       # Dokumentasi proyek
 ```
 
+## Update Terbaru
+- **[NEW]** Log aktivitas ke Discord menggunakan embed.
+- **[NEW]** Menampilkan informasi pesan yang dikirim dalam log.
+- **[FIX]** Perbaikan perhitungan jumlah pesan yang dikirim.
+- **[ENHANCEMENT]** Tampilan lebih baik dan lebih responsif.
+
 ## Catatan Penting
 - Gunakan skrip ini dengan bijak dan sesuai dengan kebijakan Discord.
 - Penyalahgunaan webhook dapat mengakibatkan webhook diblokir atau akun terkena sanksi.
