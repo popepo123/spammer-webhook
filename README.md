@@ -41,7 +41,7 @@ spammer-webhook/
 - **[ENHANCEMENT]** Tampilan lebih baik dan lebih responsif.
 - **[NEW]** Menambahkan costum Nama pada webhooks.
 - **[NEW]** Menambahkan costum URL Avatar pada webhook.
-- **[FIX]** tidak dapat spam tombol **Mulai Spam** jika proses masih berjalan.
+- **[NEW]** tidak dapat spam tombol **Mulai Spam** jika proses masih berjalan.
 
 ## Catatan Penting
 - Gunakan skrip ini dengan bijak dan sesuai dengan kebijakan Discord.
